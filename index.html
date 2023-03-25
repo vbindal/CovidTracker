@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav><button onclick="theme()">THEME</button></nav>
+    <table id = "data">
+        <tr>
+            <th>State</th>
+            <th>total confirmed cases</th>
+        </tr>
+    </table>
+    <script>
+        function bubbleSort(A, n) {
+            for(let j=0; j<n-1; j++)
+            {
+                let flag=0;
+                for(let i=0; i<n-1; i++)
+                {
+                    // console.log("before swap" , A[i].totalConfirmed, A[i+1].totalConfirmed);
+        
+                    if(A[i].totalConfirmed<A[i+1].totalConfirmed)
+                    {
+                        // console.log("if called");
+                        // swap(A[i], A[i+1]);
+                        [A[i], A[i+1]] = [A[i+1], A[i]]
+                        // console.log("after swap" ,A[i].totalConfirmed, A[i+1].totalConfirmed);
+                        flag++;
+                    }
+                }
+                if(flag==0)
+                {
+                    break;
+                }
+            }
+            return A ;
+        }
+        function theme() {
+            if (document.body.style.colorScheme == "dark"){
+                document.body.style.colorScheme = "light"
+            }
+            else{
+                document.style.colorScheme = "dark"
+            }
+        }
+        fetch("https://api.rootnet.in/covid19-in/stats/latest").then((res)=>res.json()).then(resp=>{
+        // console.log(resp)
+        let table = document.getElementById("data")
+        resp.data.regional = bubbleSort(resp.data.regional, 36);
+        console.log(resp);
+        for(let index = 0; index<resp.data.regional.length; index++)
+        {
+            const element = resp.data.regional[index];
+            let newRow = document.createElement("tr");
+            let newStatetd = document.createElement("td")
+            let newTCCtd = document.createElement("td")
+            let statenode = document.createTextNode(element.loc);
+            let tccnode = document.createTextNode(element.totalConfirmed);
+            newStatetd.appendChild(statenode)
+            newTCCtd.appendChild(tccnode)
+            newRow.appendChild(newStatetd)
+            newRow.appendChild(newTCCtd)
+            table.appendChild(newRow)
+        }
+    })
+    </script>
+</body>
+</html>
